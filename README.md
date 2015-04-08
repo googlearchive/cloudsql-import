@@ -5,6 +5,25 @@ mysql dump to a MySQL server. The resilience is gained by saving the
 current state after each query. The final goal is for the program to
 also speed up the replay by issuing some queries in parallel.
 
+## How to get the sources
+
+You can install the package in your [$GOPATH](http://code.google.com/p/go-wiki/wiki/GOPATH "GOPATH") with the [go tool](http://golang.org/cmd/go/ "go command") using the following command:
+
+```
+go get github.com/GoogleCloudPlatform/cloudsql-import
+```
+
+Note that this requires [git](http://git-scm.com/downloads) on your
+machine and in your system's `PATH`.
+
+## How to build the tool
+
+```
+go install github.com/GoogleCloudPlatform/cloudsql-import
+```
+
+The tool binary should be at `$GOPATH/bin/cloudsql-import`.
+
 ## How to run the tool
 
 ```
