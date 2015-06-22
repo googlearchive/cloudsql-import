@@ -19,6 +19,17 @@ package main
 
 // TODO: save the /*!... */ queries and replay them when restarting from a checkpoint.
 // TODO: speed up the replay by issuing queries concurrently.
+// TODO: add speed up flags (count it base on system memory details) for import session like:
+// SET @innodb_buffer_pool_size=4000000000;
+// SET @innodb_log_buffer_size=256000000;
+// SET @innodb_log_file_size=2000000000;
+// SET @innodb_write_io_threads=16;
+// SET @innodb_flush_log_at_trx_commit=0;
+// SET @max_allowed_packet=556000000;
+// SET foreign_key_checks=0;
+// SET UNIQUE_CHECKS=0; 
+// SET sql_log_bin=0;
+// set session tx_isolation="REPEATABLE-READ";
 
 import (
 	"bufio"
