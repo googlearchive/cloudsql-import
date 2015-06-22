@@ -30,6 +30,7 @@ package main
 // SET UNIQUE_CHECKS=0; 
 // SET sql_log_bin=0;
 // set session tx_isolation="REPEATABLE-READ";
+// TODO: make position logs buffer, and skip save position every single write sql query.. maybe 50mb ?
 
 import (
 	"bufio"
