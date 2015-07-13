@@ -23,11 +23,14 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"crypto/tls"
+	"crypto/x509"
 	"database/sql"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -38,6 +41,10 @@ import (
 var (
 	dump = flag.String("dump", "", "MySQL dump file")
 	dsn  = flag.String("dsn", "root:root@tcp(0.0.0.0:3306)/", "MySQL Data Source Name")
+	enableSsl = flag.Bool("enable_ssl", false, "Connect to MySQL with SSL")
+	sslCa = flag.String("ssl_ca", "server-ca.pem", "MySQL Server certificate")
+	sslCert = flag.String("ssl_cert", "client-cert.pem", "MySQL Client PEM cert file")
+	sslKey = flag.String("ssl_key", "client-key.pem", "MySQL Client PEM key file")
 )
 
 type logLine struct {
@@ -126,6 +133,27 @@ func main() {
 		log.Fatalf("no -dump file specified")
 	}
 
+    if *enableSsl {
+		rootCertPool := x509.NewCertPool()
+		pem, err := ioutil.ReadFile(*sslCa)
+		if err != nil {
+		  log.Fatal(err)
+		}
+		if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
+		  log.Fatal("Failed to append PEM.")
+		}
+		clientCert := make([]tls.Certificate, 0, 1)
+		certs, err := tls.LoadX509KeyPair(*sslCert, *sslKey)
+		if err != nil {
+		  log.Fatal(err)
+		}
+		clientCert = append(clientCert, certs)
+		mysql.RegisterTLSConfig("custom", &tls.Config{
+		  RootCAs: rootCertPool,
+		  Certificates: clientCert,
+		  InsecureSkipVerify: true, // Clou SQL Server cert does not have IP SANs
+		})
+    }
 	db, err := sql.Open("mysql", *dsn)
 	if err != nil {
 		log.Fatalln("sql.Open:", err)
