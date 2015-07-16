@@ -138,15 +138,15 @@ func main() {
 		rootCertPool := x509.NewCertPool()
 		pem, err := ioutil.ReadFile(*sslCa)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalln("ioutil.Readline:", err)
 		}
 		if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
-			log.Fatal("Failed to append PEM.")
+			log.Fatal("Failed to append CA certificate PEM.")
 		}
 		clientCert := make([]tls.Certificate, 0, 1)
 		certs, err := tls.LoadX509KeyPair(*sslCert, *sslKey)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalln("tls.LoadX509KeyPair:", err)
 		}
 		clientCert = append(clientCert, certs)
 		mysql.RegisterTLSConfig("custom", &tls.Config{
