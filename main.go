@@ -143,7 +143,7 @@ func main() {
 		if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
 			log.Fatal("Failed to append CA certificate PEM.")
 		}
-		clientCert := make([]tls.Certificate, 0, 1)
+		clientCert := []tls.Certificate{}
 		certs, err := tls.LoadX509KeyPair(*sslCert, *sslKey)
 		if err != nil {
 			log.Fatalln("tls.LoadX509KeyPair:", err)
