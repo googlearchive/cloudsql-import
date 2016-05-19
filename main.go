@@ -139,6 +139,7 @@ func main() {
 		log.Fatalf("no -dump file specified")
 	}
 
+	var finalDsn = *dsn
 	if *enableSsl {
 		pem, err := ioutil.ReadFile(*sslCa)
 		if err != nil {
@@ -154,14 +155,18 @@ func main() {
 			log.Fatalln("tls.LoadX509KeyPair:", err)
 		}
 		clientCert = append(clientCert, certs)
-		mysql.RegisterTLSConfig("custom", &tls.Config{
+		const customTLSName string = "customTLS"
+		tlserr := mysql.RegisterTLSConfig(customTLSName, &tls.Config{
 			RootCAs:      rootCertPool,
 			Certificates: clientCert,
 			ServerName:   *serverName,
 		})
+		if tlserr != nil {
+			log.Fatalln("mysql.RegisterTLSConfig:", tlserr)
+		}
+		finalDsn = strings.Join([]string{finalDsn, "?tls=", customTLSName}, "")
 	}
 
-	var finalDsn = *dsn
 	if *prompt {
 		dsnRegex := regexp.MustCompile(`(\w*):?\w*(@.+)`)
 		matches := dsnRegex.FindStringSubmatch(finalDsn)
