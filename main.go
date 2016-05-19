@@ -140,11 +140,11 @@ func main() {
 	}
 
 	if *enableSsl {
-		rootCertPool := x509.NewCertPool()
 		pem, err := ioutil.ReadFile(*sslCa)
 		if err != nil {
 			log.Fatalln("ioutil.Readline:", err)
 		}
+		rootCertPool := x509.NewCertPool()
 		if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
 			log.Fatal("Failed to append CA certificate PEM.")
 		}
