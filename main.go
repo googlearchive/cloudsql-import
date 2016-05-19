@@ -33,15 +33,20 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"regexp"
+	"strings"
+	"syscall"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var (
 	dump       = flag.String("dump", "", "MySQL dump file")
 	dsn        = flag.String("dsn", "root:root@tcp(0.0.0.0:3306)/", "MySQL Data Source Name")
 	enableSsl  = flag.Bool("enable_ssl", false, "Connect to MySQL with SSL")
+	prompt     = flag.Bool("prompt", false, "Prompt for password rather than specifying in the command")
 	sslCa      = flag.String("ssl_ca", "server-ca.pem", "MySQL Server certificate")
 	sslCert    = flag.String("ssl_cert", "client-cert.pem", "MySQL Client PEM cert file")
 	sslKey     = flag.String("ssl_key", "client-key.pem", "MySQL Client PEM key file")
@@ -155,7 +160,32 @@ func main() {
 			ServerName:   *serverName,
 		})
 	}
-	db, err := sql.Open("mysql", *dsn)
+
+	var finalDsn = *dsn
+	if *prompt {
+		dsnRegex := regexp.MustCompile(`(\w*):?\w*(@.+)`)
+		matches := dsnRegex.FindStringSubmatch(finalDsn)
+		if matches == nil {
+			fmt.Print("Incorrect format for dsn. Usage:\n")
+			flag.PrintDefaults()
+			os.Exit(1)
+		}
+
+		fmt.Print("Enter password: ")
+		// don't echo password to screen during input
+		bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+		if err != nil {
+			log.Fatalln("Error reading password:", err)
+		}
+		// ReadPassword() leaves cursor on the input line,
+		// so begin output on the next line
+		fmt.Print("\n")
+
+		// insert password into the connection string
+		finalDsn = strings.Join([]string{matches[1], ":", string(bytePassword), matches[2]}, "")
+	}
+
+	db, err := sql.Open("mysql", finalDsn)
 	if err != nil {
 		log.Fatalln("sql.Open:", err)
 	}
