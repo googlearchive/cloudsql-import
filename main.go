@@ -44,7 +44,7 @@ import (
 
 var (
 	dump       = flag.String("dump", "", "MySQL dump file")
-	dsn        = flag.String("dsn", "root:root@tcp(0.0.0.0:3306)/", "MySQL Data Source Name")
+	dsn        = flag.String("dsn", "user:password@tcp(0.0.0.0:3306)/", "MySQL Data Source Name")
 	enableSsl  = flag.Bool("enable_ssl", false, "Connect to MySQL with SSL")
 	prompt     = flag.Bool("prompt", false, "Prompt for password rather than specifying in the command")
 	sslCa      = flag.String("ssl_ca", "server-ca.pem", "MySQL Server certificate")
