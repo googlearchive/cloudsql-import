@@ -155,7 +155,7 @@ func main() {
 			log.Fatalln("tls.LoadX509KeyPair:", err)
 		}
 		clientCert = append(clientCert, certs)
-		const customTLSName string = "customTLS"
+		const customTLSName = "custom"
 		tlserr := mysql.RegisterTLSConfig(customTLSName, &tls.Config{
 			RootCAs:      rootCertPool,
 			Certificates: clientCert,
