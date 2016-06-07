@@ -177,7 +177,7 @@ func main() {
 		}
 
 		fmt.Print("Enter password: ")
-		// don't echo password to screen during input
+		// Don't echo password to screen during input.
 		bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
 		if err != nil {
 			log.Fatalln("Error reading password:", err)
@@ -186,7 +186,7 @@ func main() {
 		// so begin output on the next line
 		fmt.Print("\n")
 
-		// insert password into the connection string
+		// Insert password into the connection string.
 		finalDsn = strings.Join([]string{matches[1], ":", string(bytePassword), matches[2]}, "")
 	}
 
