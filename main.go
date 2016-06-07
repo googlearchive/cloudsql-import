@@ -46,7 +46,7 @@ var (
 	dump       = flag.String("dump", "", "MySQL dump file")
 	dsn        = flag.String("dsn", "user:password@tcp(0.0.0.0:3306)/", "MySQL Data Source Name")
 	enableSsl  = flag.Bool("enable_ssl", false, "Connect to MySQL with SSL")
-	prompt     = flag.Bool("prompt", false, "Prompt for password rather than specifying in the command")
+	prompt     = flag.Bool("prompt", false, "Prompt for password rather than specifying in the command. Change dsn format to 'user@tcp(0.0.0.0:3306)/'")
 	sslCa      = flag.String("ssl_ca", "server-ca.pem", "MySQL Server certificate")
 	sslCert    = flag.String("ssl_cert", "client-cert.pem", "MySQL Client PEM cert file")
 	sslKey     = flag.String("ssl_key", "client-key.pem", "MySQL Client PEM key file")
@@ -168,6 +168,12 @@ func main() {
 	}
 
 	if *prompt {
+		// DSN strings look like:
+		// user:password@tcp(0.0.0.0:3306)/
+		// With this flag the user can avoid typing their password:
+		// user@tcp(0.0.0.0:3306)/
+		// Save text before : and after @ so we can insert the password
+		// to create a proper DSN string.
 		dsnRegex := regexp.MustCompile(`(\w*):?\w*(@.+)`)
 		matches := dsnRegex.FindStringSubmatch(finalDsn)
 		if matches == nil {
