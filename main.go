@@ -178,7 +178,7 @@ func main() {
 
 		fmt.Print("Enter password: ")
 		// Don't echo password to screen during input.
-		bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+		password, err := terminal.ReadPassword(int(syscall.Stdin))
 		if err != nil {
 			log.Fatalln("Error reading password:", err)
 		}
@@ -187,7 +187,7 @@ func main() {
 		fmt.Print("\n")
 
 		// Insert password into the connection string.
-		finalDsn = strings.Join([]string{matches[1], ":", string(bytePassword), matches[2]}, "")
+		finalDsn = strings.Join([]string{matches[1], ":", string(password), matches[2]}, "")
 	}
 
 	db, err := sql.Open("mysql", finalDsn)
