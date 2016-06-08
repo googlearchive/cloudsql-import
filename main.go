@@ -172,7 +172,7 @@ func main() {
 		//     user:password@tcp(0.0.0.0:3306)/
 		// With this flag the user can avoid typing their password:
 		//     user@tcp(0.0.0.0:3306)/
-		// Save text before : and after @ so we can insert the password
+		// Save text before ':' and after '@' so we can insert the password
 		// to create a proper DSN string.
 		dsnRegex := regexp.MustCompile(`(\w*):?\w*(@.+)`)
 		matches := dsnRegex.FindStringSubmatch(finalDsn)
