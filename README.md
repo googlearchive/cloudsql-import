@@ -21,7 +21,7 @@ The tool binary should be at `$GOPATH/bin/cloudsql-import`.
 ## How to run the tool
 
 ```
-cloudsql-import --dump=dump.sql --dsn='USER:ROOT@tcp(X.X.X.X:3306)/YYYY'
+cloudsql-import --dump=dump.sql --dsn='USER:PASSWORD@tcp(X.X.X.X:3306)/YYYY'
 ```
 
 Where `YYYY` is a (optional) database name.
