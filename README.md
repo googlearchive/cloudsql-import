@@ -1,5 +1,9 @@
 # Cloud SQL import tool
 
+**WARNING**: _this project has been deprecated and is no longer supported or maintained._ 
+
+_This project will be archived on April 1, 2020._
+
 `cloudsql-import` is a program resilient to restarts that replays a
 mysql dump to a MySQL server. The resilience is gained by saving the
 current state after each query. The final goal is for the program to
